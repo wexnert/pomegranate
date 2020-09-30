@@ -61,11 +61,18 @@ else:
 
     extensions = cythonize(extensions, compiler_directives={'language_level' : "2"})
 
+def set_builtin(name, value):
+        if isinstance(__builtins__, dict):
+            __builtins__[name] = value
+        else:
+            setattr(__builtins__, name, value)
+	
 class build_ext(_build_ext):
     def finalize_options(self):
         _build_ext.finalize_options(self)
         # Prevent numpy from thinking it is still in its setup process:
-        __builtins__.__NUMPY_SETUP__ = False
+        #__builtins__.__NUMPY_SETUP__ = False
+	set_builtin(__NUMPY_SETUP__, False)
         import numpy
         self.include_dirs.append(numpy.get_include())
 
